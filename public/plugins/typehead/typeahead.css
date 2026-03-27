@@ -1,0 +1,37 @@
+.typeahead { 
+	/*border: 2px solid #FFF; */
+	/*border-radius: 4px; */
+	padding: 8px 12px;
+	/*max-width: 300px;
+	min-width: 290px; */
+	width:300px;
+	/*background: rgba(66, 52, 52, 0.5);*/
+	/*color: #FFF; */
+}
+
+.typeahead:focus {
+	box-shadow: 0 0 15px 5px #b0e0ee;
+	border: 2px solid #bebede;	
+}
+
+.tt-menu { 
+	width:300px; 
+}
+ul.typeahead {
+	margin:0px;
+	padding:0px 0px;
+}
+ul.typeahead.dropdown-menu li a {
+	padding: 10px !important;	
+	border-bottom:#CCC 1px solid;
+	color:#B32716;
+}
+ul.typeahead.dropdown-menu li:last-child a { 
+	border-bottom:0px !important; 
+}
+
+.dropdown-menu>.active>a, .dropdown-menu>.active>a:focus, .dropdown-menu>.active>a:hover {
+	text-decoration: none;
+	background-color: #F39C12;
+	outline: 0;
+}

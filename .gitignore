@@ -1,0 +1,63 @@
+# =========================
+# OS & Editor
+# =========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# =========================
+# Composer
+# =========================
+/vendor/
+composer.lock
+
+# =========================
+# Phalcon specific
+# =========================
+/cache/
+/logs/
+
+# Jika ada folder cache custom
+app/cache/
+public/cache/
+
+# =========================
+# Environment
+# =========================
+.env
+.env.*
+
+# =========================
+# Build / Temporary files
+# =========================
+*.log
+*.tmp
+*.temp
+
+# =========================
+# Node (kalau ada frontend tools)
+# =========================
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# =========================
+# Uploads / user files
+# =========================
+public/uploads/
+storage/uploads/
+
+# =========================
+# Testing
+# =========================
+/tests/_output/
+/tests/_data/
+
+# =========================
+# Misc
+# =========================
+coverage/
+*.cache

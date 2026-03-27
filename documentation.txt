@@ -1,0 +1,47 @@
+Phalcon_3.4.5
+
+Bootstrap v4.4.1 (https://getbootstrap.com/)
+jQuery v3.4.1 | (c) JS Foundation and other contributors | jquery.org/license
+jQuery v3.6.0 | (c) jQuery Foundation | jquery.org/license
+
+https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free
+
+Template: AdminLTE-3.0.5
+http://localhost/AdminLTE-3.0.5/
+
+Plugins:
+TextBox Autocomplete: 
+Devbridge JQuery Autocomplete https://github.com/devbridge/jquery-Autocomplete
+D:\Projects Web App\exercise-projects\autocomplete-devbridge
+
+Devbridge jQuery Autocomplete ini conflict dengan jQuery UI.
+Sementara jQuery UI di-non-load sampai dengan jQuery UI harus diload jika ada yang tidak jalan.
+
+Bootstrap Dialog
+Membuat alert menggunakan bentuk modal yang simple menggantikan alert bawaan JavaScript yang kaku.
+
+Localhost:
+http://localhost/mencobalogin/
+
+-------------------------------------------------------------------------------------------
+
+<!-- icon -->
+Tambah : <i class="fas fa-plus-circle"></i>
+Detail : <i class="fas fa-info-circle"></i>
+Edit : <i class="fas fa-edit"></i>
+Simpan : <i class="fas fa-save"></i>
+Hapus : <i class="fas fa-trash-alt"></i>
+Kembali : <i class="fas fa-reply"></i>
+
+<!-- color -->
+Input, Tambah : bg-primary
+Detail, Info : bg-info
+Edit : bg-warning
+Hapus : bg-danger
+Simpan : bg-success
+Batal, Kembali : bg-secondary
+
+<!-- size -->
+table : <div class="table tabel-sm table-hover table-bordered"></div>
+button di dalam table (info, edit, delete, dst) : <button class="btn btn-xs"></button>
+button di luar table (simpan, batal, kembali, dst) : <button class="btn btn-sm"></button>

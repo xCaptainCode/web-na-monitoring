@@ -1,0 +1,25 @@
+/*!
+ * main-custom.css
+ * css utama custom atur/sesuaikan beberapa tampilan.
+ * 2020/07/04 09:13 by mudzakkir
+ * --------------------------------------------------------------------------------------------
+ */
+ 
+ .user-panel {
+	/*
+	border-color: blue;
+	border-style: solid;
+	border-width: 1px;
+	*/
+	margin-top: -12px;
+}
+ 
+ 
+/* change hover color menu dropdown 
+navbar sebelah kanan hingga tombol profile 
+agar tidak sama dengan warna background logo aplikasi navbar
+paling kiri.
+*/
+.navbar-nav > ul > li:hover {
+	background: #0275d8;
+}
