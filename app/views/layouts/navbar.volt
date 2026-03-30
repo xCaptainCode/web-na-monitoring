@@ -14,8 +14,16 @@
 		<div class="collapse navbar-collapse order-3" id="navbarCollapse">
 			<!-- Left navbar links -->
 			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a href="#" class="nav-link">Monitor Etalase</a>
+				{# <li class="nav-item">
+					<a href="{{ url('monitoretalase') }}" class="nav-link">Monitor Etalase</a>
+				</li> #}
+				<li class="nav-item dropdown dropdown-hover">
+					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+						class="nav-link dropdown-toggle">Monitor Etalase</a>
+					<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-1 shadow" style="left: 0px; right: inherit;">
+						<li><a href="{{ url('monitoretalase') }}" class="dropdown-item">Stock Peralatan </a></li>
+						<li><a href="{{ url('monitoretalase/riwayat') }}" class="dropdown-item">Riwayat Pemakaian </a></li>
+					</ul>
 				</li>
 				<li class="nav-item">
 					<a href="#" class="nav-link">Penjaga Etalase</a>

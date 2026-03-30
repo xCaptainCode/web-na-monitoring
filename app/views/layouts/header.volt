@@ -1,7 +1,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>NA Back Office</title>
+	<title>NA Monitoring</title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- Font Awesome -->
@@ -15,7 +15,7 @@
 
 	<!-- dari sini link sementara dimatikan agar akses lebih cepat Rabu, 04 Februari 2026 -->
 	<!-- icon apps -->
-	<link rel="shortcut icon" href="{{ url('dist/img/back-office.jpg') }}" type="image/x-icon">
+	<link rel="shortcut icon" href="{{ url('dist/img/monitoring_12744110.png') }}" type="image/x-icon">
 	<!-- Ionicons -->
 		{# <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> #}
 	<!-- remix icon -->

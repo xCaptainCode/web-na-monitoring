@@ -127,7 +127,7 @@ $di->setShared('db', function () {
 
 
 //This service returns another PostgreSQL database
-$di->set('dbFrontOffice', function() {
+$di->set('dbNa', function() {
     return new \Phalcon\Db\Adapter\Pdo\PostgreSQL(array(
        'host' => 'localhost',
        'port' => '5432',
@@ -138,7 +138,7 @@ $di->set('dbFrontOffice', function() {
 });
 
 //This service returns another PostgreSQL database
-$di->set('dbtoko', function() {
+$di->set('dbToko', function() {
     return new \Phalcon\Db\Adapter\Pdo\PostgreSQL(array(
        'host' => 'localhost',
        'port' => '5432',

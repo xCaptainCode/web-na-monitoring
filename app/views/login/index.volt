@@ -4,14 +4,14 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>NA Back Office</title>
+	<title>NA Monitoring</title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
 	<!-- Font Awesome -->
 	{{ stylesheet_link("plugins/fontawesome-free/css/all.min.css") }}
 	<!-- logo app -->
-	<link rel="shortcut icon" href="{{ url('dist/img/back-office.jpg') }}" type="image/x-icon">
+	<link rel="shortcut icon" href="{{ url('dist/img/monitoring_12744110.png') }}" type="image/x-icon">
 	<!-- Ionicons -->
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
