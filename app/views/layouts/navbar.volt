@@ -1,6 +1,6 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
 	<div class="container">
-		<a href="index" class="navbar-brand">
+		<a href="{{ url('index') }}" class="navbar-brand">
 			{# <img src="{{ url('dist/img/monitoring_95x95.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 p-1"
 				style="opacity: .8"> #}
 			<span class="brand-text font-weight-light">NA Monitoring</span>
@@ -20,13 +20,20 @@
 				<li class="nav-item dropdown dropdown-hover">
 					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 						class="nav-link dropdown-toggle">Monitor Etalase</a>
-					<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-1 shadow" style="left: 0px; right: inherit;">
+					<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-1 shadow mt-0 pt-0" style="left: 0px; right: inherit;">
 						<li><a href="{{ url('monitoretalase') }}" class="dropdown-item">Stock Peralatan </a></li>
 						<li><a href="{{ url('monitoretalase/riwayat') }}" class="dropdown-item">Riwayat Pemakaian </a></li>
 					</ul>
 				</li>
-				<li class="nav-item">
-					<a href="#" class="nav-link">Penjaga Etalase</a>
+				<li class="nav-item dropdown dropdown-hover">
+					<a id="dropdownSubMenu3" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+						class="nav-link dropdown-toggle">Penjaga Etalase</a>
+					<ul aria-labelledby="dropdownSubMenu3" class="dropdown-menu border-1 shadow mt-0 pt-0" style="left: 0px; right: inherit;">
+						<li><a href="{{ url('penjagaetalase/pancing') }}" class="dropdown-item">Area Pancing </a></li>
+						<li><a href="{{ url('penjagaetalase/taman_dino') }}" class="dropdown-item">Area Taman Dino </a></li>
+						<li><a href="{{ url('penjagaetalase/aula_dino') }}" class="dropdown-item">Area Aula Dino </a></li>
+						<li><a href="{{ url('penjagaetalase/outbound') }}" class="dropdown-item">Area Outbound </a></li>
+					</ul>
 				</li>
 				<li class="nav-item dropdown" hidden>
 					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"

@@ -1,0 +1,1 @@
+{% include 'penjagaetalase/pancingLoad.volt' %}
