@@ -114,14 +114,10 @@ class PenjagaetalaseController extends Controller {
             AND area = :db_area
             AND (SELECT COUNT(*) FROM kurang_stocketalase WHERE o_kode = j.o_kode) = 0
          ORDER BY j.j_jam;";
-      $records = $this->dbNa->fetchAll(
-         $sql,
-         Db::FETCH_ASSOC,
-         [
-            'id_area' => $idArea,
-            'db_area' => $dbArea,
-         ]
-      );
+      $records = $this->dbNa->fetchAll($sql,Db::FETCH_ASSOC,[
+         'id_area' => $idArea,
+         'db_area' => $dbArea,
+      ]);
 
       $qtyMap  = [];
       $qtyRows = $this->dbNa->fetchAll(
@@ -185,10 +181,12 @@ class PenjagaetalaseController extends Controller {
       $this->view->area_slug = $config['slug'];
       $this->view->area_label = $config['label'];
    }
+   // =========================== END OF PRIVATE METHODS =======================
+   
+   // ==========================================================================
+   //  END OF PRIVATE METHODS
+   // ==========================================================================
 
-   // ==========================================================================
-   //  AREA PANCING
-   // ==========================================================================
    public function pancingAction() {
       $this->assignAreaViewData(1);
    }
@@ -260,7 +258,7 @@ class PenjagaetalaseController extends Controller {
       }
 
       $sql = "INSERT INTO kurang_stocketalase (id_area, qty_piring, qty_gelas, o_kode, pengantar) 
-              VALUES (:id_area, :qty_piring, :qty_gelas, :o_kode, :pengantar)";
+         VALUES (:id_area, :qty_piring, :qty_gelas, :o_kode, :pengantar)";
 
       $success = $this->dbNa->execute(
          $sql,[
@@ -280,5 +278,5 @@ class PenjagaetalaseController extends Controller {
 
       return $this->response->redirect($redirectPath);
    }
-
+   
 }

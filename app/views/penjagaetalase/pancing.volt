@@ -110,12 +110,12 @@
          $('#dataTable').DataTable({
             responsive: false,
             autoWidth: false,
-            paging: true,
+            paging: false,
             searching: true,
             ordering: true,
             info: true,
             lengthChange: false,
-            pageLength: 10
+            // pageLength: 10
          });
       }
 
@@ -123,17 +123,17 @@
 
       $('#refreshData').on('click', '.row-click', function () {
 
-         let id = $(this).attr('data-id');
+         let id        = $(this).attr('data-id');
 
-         let kode = $(this).attr('data-kode');
-         let customer = $(this).attr('data-customer');
-         let jmlorg = $(this).attr('data-jmlorg');
-         let meja = $(this).attr('data-meja');
-         let area = $(this).attr('data-area');
+         let kode      = $(this).attr('data-kode');
+         let customer  = $(this).attr('data-customer');
+         let jmlorg    = $(this).attr('data-jmlorg');
+         let meja      = $(this).attr('data-meja');
+         let area      = $(this).attr('data-area');
          let pengantar = $(this).attr('data-pengantar');
-         let piring = $(this).attr('data-piring');
-         let gls = $(this).attr('data-gls');
-         let jam = $(this).attr('data-jam');
+         let piring    = $(this).attr('data-piring');
+         let gls       = $(this).attr('data-gls');
+         let jam       = $(this).attr('data-jam');
 
 
          $('#form-id-area').val(area);

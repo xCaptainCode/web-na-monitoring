@@ -33,7 +33,15 @@
 						<li><a href="{{ url('penjagaetalase/taman_dino') }}" class="dropdown-item">Area Taman Dino </a></li>
 						<li><a href="{{ url('penjagaetalase/aula_dino') }}" class="dropdown-item">Area Aula Dino </a></li>
 						<li><a href="{{ url('penjagaetalase/outbound') }}" class="dropdown-item">Area Outbound </a></li>
+						
+						{# <li class="dropdown-divider"></li> #}
+						
+						{# <li><a href="{{ url('monitorminuman/index') }}" class="dropdown-item">Monitor Minuman </a></li> #}
+						
 					</ul>
+				</li>
+				<li class="nav-item">
+					<a href="{{ url('monitorminuman/index') }}" class="nav-link">Monitor Minuman</a>
 				</li>
 				<li class="nav-item dropdown" hidden>
 					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
