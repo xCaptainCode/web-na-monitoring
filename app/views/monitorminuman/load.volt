@@ -7,7 +7,7 @@
          <div class="card-body p-2">
             <div class="table-responsive">
                <table id="dataTable" class="table table-sm table-bordered table-striped table-hover">
-                  <thead class="text-center">
+                  <thead class="text-center bg-primary">
                      <tr>
                         <th>Nota</th>
                         <th>Customer</th>
@@ -20,7 +20,7 @@
                      {% set hasRow = false %}
                      {% for dn in daftar_nota %}
                      {% set hasRow = true %}
-                     <tr class="row-click"
+                     <tr class="row-click {% if dn.has_meja == false %}table-warning{% endif %}"
                         style="cursor:pointer"
                         data-id="{{ dn.o_kode }}"
                         data-kode="{{ dn.nota_format }}"
@@ -28,10 +28,17 @@
                         data-area="{{ dn.area }}"
                         data-meja="{{ dn.o_meja }}"
                         data-jam="{{ dn.tunggu }}"
-                        data-detail="{{ dn.detail_minuman_base64 }}">
+                        data-detail="{{ dn.detail_minuman_base64 }}"
+                        data-note="{{ dn.o_note }}"
+                        data-has-meja="{% if dn.has_meja %}1{% else %}0{% endif %}">
                         <td class="text-center text-bold">{{ dn.nota_format }}</td>
                         <td>{{ dn.o_cnama }}</td>
-                        <td class="text-center">{{ dn.o_meja }}</td>
+                        <td class="text-center">
+                           {{ dn.o_meja }}
+                           {% if dn.has_meja == false %}
+                           <span class="badge badge-warning ml-1">Belum Dapat Meja</span>
+                           {% endif %}
+                        </td>
                         <td class="text-center">{{ dn.tunggu }}</td>
                         <td class="text-center">{{ dn.jumlah_minuman }}</td>
                      </tr>
@@ -56,11 +63,11 @@
          <div class="card-body p-2">
             <div class="table-responsive">
                <table class="table table-sm table-bordered table-striped table-hover mb-0">
-                  <thead class="text-center">
+                  <thead class="text-center bg-success">
                      <tr>
                         <th>Menu</th>
                         <th>Qty</th>
-                        <th>Nota</th>
+                        <th>Satuan</th>
                      </tr>
                   </thead>
                   <tbody>
@@ -69,8 +76,14 @@
                      {% set hasOrder = true %}
                      <tr>
                         <td>{{ item.nama_olahan }}</td>
-                        <td class="text-center">{{ item.total_qty }} {{ item.satuan }}</td>
-                        <td class="text-center">{{ item.jml_nota }}</td>
+                        <td class="text-center">{{ item.total_qty }}</td>
+                        <td class="text-center">{{ item.satuan }}</td>
+                        {# <td class="text-center">
+                           {{ item.jml_nota }}
+                           {% if item.jml_nota_belum_meja > 0 %}
+                           <div><span class="badge badge-warning">{{ item.jml_nota_belum_meja }} blm meja</span></div>
+                           {% endif %}
+                        </td> #}
                      </tr>
                      {% endfor %}
                      {% if hasOrder == false %}

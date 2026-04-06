@@ -19,6 +19,14 @@
 				</li> #}
 				<li class="nav-item dropdown dropdown-hover">
 					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+						class="nav-link dropdown-toggle">Monitor Minuman</a>
+					<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-1 shadow mt-0 pt-0" style="left: 0px; right: inherit;">
+						<li><a href="{{ url('monitorminuman/index') }}" class="dropdown-item">Monitor Minuman </a></li>
+						<li><a href="{{ url('monitorminuman/riwayat') }}" class="dropdown-item">Riwayat Nota </a></li>
+					</ul>
+				</li>
+				<li class="nav-item dropdown dropdown-hover">
+					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 						class="nav-link dropdown-toggle">Monitor Etalase</a>
 					<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-1 shadow mt-0 pt-0" style="left: 0px; right: inherit;">
 						<li><a href="{{ url('monitoretalase') }}" class="dropdown-item">Stock Peralatan </a></li>
@@ -40,9 +48,9 @@
 						
 					</ul>
 				</li>
-				<li class="nav-item">
+				{# <li class="nav-item">
 					<a href="{{ url('monitorminuman/index') }}" class="nav-link">Monitor Minuman</a>
-				</li>
+				</li> #}
 				<li class="nav-item dropdown" hidden>
 					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 						class="nav-link dropdown-toggle">Dropdown</a>
