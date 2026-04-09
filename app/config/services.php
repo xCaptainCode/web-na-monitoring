@@ -129,12 +129,12 @@ $di->setShared('db', function () {
 //This service returns another PostgreSQL database
 $di->set('dbNa', function() {
     return new \Phalcon\Db\Adapter\Pdo\PostgreSQL(array(
-       'host' => '192.168.1.2',
+       'host' => 'localhost',
        'port' => '5432',
        'username' => 'appusers',
        'password' => 'ngrembelokyes',
        'dbname' => 'ngrembelasri'
-    ));
+   ));
 });
 
 //This service returns another PostgreSQL database
@@ -145,7 +145,7 @@ $di->set('dbToko', function() {
        'username' => 'appusers',
        'password' => 'ngrembelokyes',
        'dbname' => 'tokosouvenir'
-    ));
+   ));
 });
 $di->set('dbTrx', function () {
     return new \Phalcon\Db\Adapter\Pdo\PostgreSQL(array(

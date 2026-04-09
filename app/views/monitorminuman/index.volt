@@ -19,6 +19,12 @@
    .presence-edit-clickable:hover {
       background-color: rgba(23, 162, 184, 0.12);
    }
+
+   .btn-penyaji {
+      width: 100px;
+
+   }
+   
 </style>
 
 <div class="content-header">
@@ -30,7 +36,6 @@
          <div class="col-sm-6 small">
             <ol class="breadcrumb float-sm-right">
                <li class="breadcrumb-item"><a href="#">Home</a></li>
-               <li class="breadcrumb-item"><a href="#">Penjaga Etalase</a></li>
                <li class="breadcrumb-item active">Monitor Minuman</li>
             </ol>
          </div>
@@ -61,7 +66,10 @@
                <div class="col-6"><i class="fa fa-user" aria-hidden="true"></i> <span id="data-customer"></span></div>
                <div class="col-6"><i class="fa fa-table" aria-hidden="true"></i> <span id="data-meja"></span></div>
                <div class="col-6"><i class="fa fa-map-marker-alt" aria-hidden="true"></i> <span id="data-area"></span></div>
-               <div class="col-6"><i class="fa fa-clock" aria-hidden="true"></i> <span id="data-jam"></span></div>
+               <div class="col-6"><i class="fa fa-hourglass-2" aria-hidden="true"></i> <span id="data-jam"></span></div>
+            </div>
+            <div id="scan-warning" class="alert alert-warning py-2 px-3 mt-3 mb-0" hidden>
+               Nota ini belum mendapat meja, jadi belum bisa di-scan.
             </div>
             <hr>
             <div class="table-responsive">
@@ -77,6 +85,12 @@
                   <tbody id="detail-minuman-body"></tbody>
                </table>
             </div>
+            <!-- note -->
+            <div class="form-group">
+               <label for="form-note">Note</label>
+               <input type="text" name="" id="form-note" class="form-control form-control-sm" readonly>
+            </div>
+            
             <form method="post" action="{{ url('monitorminuman/scan_nota') }}" id="formScanMinuman" class="mt-3">
                <input type="hidden" name="o_kode" id="form-o-kode">
                <input type="hidden" name="nik_penyaji" id="form-nik-penyaji">
@@ -98,7 +112,7 @@
                </div>
 
                <div class="mb-0">
-                  <div class="small text-muted mb-1">Part Timer</div>
+                  <div class="small text-muted mb-1">Parttimer</div>
                   <div class="d-flex flex-wrap" style="gap:6px;">
                      {% for item in daftar_penyaji_parttimer %}
                      <button type="button" class="btn btn-outline-info btn-sm btn-penyaji" data-nik="{{ item.nik }}" data-nama="{{ item.nama_alias }}">
@@ -155,6 +169,8 @@
          let meja = $(this).attr('data-meja');
          let area = $(this).attr('data-area');
          let jam = $(this).attr('data-jam');
+         let note = $(this).attr('data-note');
+         let hasMeja = $(this).attr('data-has-meja') === '1';
          let detail = $(this).attr('data-detail');
          let detailMinuman = [];
 
@@ -170,6 +186,13 @@
          $('#data-meja').text(meja);
          $('#data-area').text(area);
          $('#data-jam').text(jam);
+         $('#form-note').val(note);
+         $('#scan-warning').prop('hidden', hasMeja);
+         $('.btn-penyaji').prop('disabled', !hasMeja);
+         $('#btn-simpan-saji').prop('disabled', !hasMeja);
+         if (!hasMeja) {
+            $('#form-penyaji-nama').val('Menunggu meja');
+         }
 
          let rows = '';
 
@@ -191,6 +214,10 @@
       });
 
       $(document).on('click', '.btn-penyaji', function () {
+         if ($(this).prop('disabled')) {
+            return;
+         }
+
          let nik = $(this).attr('data-nik');
          let nama = $(this).attr('data-nama');
 
@@ -202,6 +229,10 @@
       });
 
       $('#formScanMinuman').on('submit', function () {
+         if ($('#btn-simpan-saji').prop('disabled')) {
+            return false;
+         }
+
          if ($('#form-nik-penyaji').val() === '') {
             alert('Pilih penyaji minuman terlebih dahulu.');
             return false;
