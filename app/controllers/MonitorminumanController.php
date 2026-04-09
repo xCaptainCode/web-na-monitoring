@@ -52,7 +52,7 @@ class MonitorminumanController extends Controller {
       $parttimer = $this->db->fetchAll(
          "SELECT nomor_id_card AS nik, nama_alias
          FROM pt_vpresence
-         WHERE tanggal = '2026-01-01'
+         WHERE tanggal = CURRENT_DATE
             AND keterangan = 1
             AND namapos IN ('PRAMUSAJI', 'DAPUR SAJI')
          ORDER BY nama_alias",
@@ -118,6 +118,63 @@ class MonitorminumanController extends Controller {
       }
 
       return $nik;
+   }
+
+   private function hasPenjagaEtalaseToday(): bool {
+      $row = $this->db->fetchOne(
+         "SELECT COUNT(*) AS total
+          FROM penjaga_etalase
+          WHERE tanggal = current_date",
+         Db::FETCH_ASSOC
+      );
+
+      return ((int) ($row['total'] ?? 0)) > 0;
+   }
+
+   private function isAreaPancing(?string $area): bool {
+      return strtoupper(trim((string) $area)) === 'AREA PANCING';
+   }
+
+   private function getEtalaseQtyByNota(string $oKode, int $jmlorg): array {
+      $qtyData = $this->dbNa->fetchOne(
+         "SELECT
+            MAX(CASE WHEN m.is_sajiprg = 't' THEN 1 ELSE 0 END) AS ada_prg,
+            MAX(CASE WHEN m.is_sajigls = 't' THEN 1 ELSE 0 END) AS ada_gls,
+            MAX(CASE WHEN m.satuan = 'TKO' THEN 1 ELSE 0 END) AS ada_teko,
+            COALESCE(SUM(od.od_qty * COALESCE(m.min_prg, 0)), 0) AS ttl_min_prg,
+            COALESCE(SUM(od.od_qty * COALESCE(m.min_gls, 0)), 0) AS ttl_min_gls
+         FROM sel_ordersdetil_hariini AS od
+         INNER JOIN sel_mmenu AS m USING (sel_mmenu_id)
+         WHERE od.o_kode = :o_kode",
+         Db::FETCH_ASSOC,
+         [
+            'o_kode' => $oKode,
+         ]
+      ) ?: [
+         'ada_prg' => 0,
+         'ada_gls' => 0,
+         'ada_teko' => 0,
+         'ttl_min_prg' => 0,
+         'ttl_min_gls' => 0,
+      ];
+
+      $adaPrg = (int) $qtyData['ada_prg'] === 1;
+      $adaGls = (int) $qtyData['ada_gls'] === 1;
+      $adaTeko = (int) $qtyData['ada_teko'] >= 1;
+      $minPrg = (int) $qtyData['ttl_min_prg'];
+      $minGls = (int) $qtyData['ttl_min_gls'];
+
+      $qtyPiring = $adaPrg ? max(0, $jmlorg - $minPrg) : 0;
+      $qtyGelas = 0;
+
+      if ($adaGls) {
+         $qtyGelas = $adaTeko ? $jmlorg : max(0, $jmlorg - $minGls);
+      }
+
+      return [
+         'qty_piring' => $qtyPiring,
+         'qty_gelas' => $qtyGelas,
+      ];
    }
 
    private function getPendingMinumanData(): array {
@@ -248,7 +305,7 @@ class MonitorminumanController extends Controller {
                WHERE od.o_kode = j.o_kode
                   AND m.kategori = 'MINUMAN'
             )
-         ORDER BY j.j_kode";
+         ORDER BY j.j_kode DESC";
 
       $records = $this->dbNa->fetchAll($sql, Db::FETCH_ASSOC);
       $aliasMap = $this->getPenyajiAliasMap();
@@ -303,8 +360,12 @@ class MonitorminumanController extends Controller {
       }
 
       $nota = $this->dbNa->fetchOne(
-         "SELECT COALESCE(o_meja, '') AS o_meja
-         FROM sel_orders_hariini
+         "SELECT
+            COALESCE(o.o_meja, '') AS o_meja,
+            o.o_jmlorg,
+            COALESCE(ma.area, '') AS area
+         FROM sel_orders_hariini AS o
+         LEFT JOIN monitor_area_hariini AS ma USING (o_kode)
          WHERE o_kode = :o_kode",
          Db::FETCH_ASSOC,
          [
@@ -323,6 +384,42 @@ class MonitorminumanController extends Controller {
          return $this->response->redirect('monitorminuman/index');
       }
 
+      $hasPenjagaToday = $this->hasPenjagaEtalaseToday();
+      $areaPancing = $this->isAreaPancing($nota['area'] ?? '');
+      $shouldKurangEtalase = $hasPenjagaToday ? $areaPancing : true;
+
+      $stockEtalaseSaved = true;
+      if ($shouldKurangEtalase) {
+         $jmlorg = (int) ($nota['o_jmlorg'] ?? 0);
+         $qty = $this->getEtalaseQtyByNota($oKode, $jmlorg);
+
+         if ($qty['qty_piring'] > 0 || $qty['qty_gelas'] > 0) {
+            $existingKurang = $this->dbNa->fetchOne(
+               "SELECT 1
+                FROM kurang_stocketalase
+                WHERE o_kode = :o_kode
+                LIMIT 1",
+               Db::FETCH_ASSOC,
+               [
+                  'o_kode' => $oKode,
+               ]
+            );
+
+            if (!$existingKurang) {
+               $stockEtalaseSaved = $this->dbNa->execute(
+                  "INSERT INTO kurang_stocketalase (id_area, qty_piring, qty_gelas, o_kode, pengantar)
+                   VALUES (1, :qty_piring, :qty_gelas, :o_kode, :pengantar)",
+                  [
+                     'qty_piring' => $qty['qty_piring'],
+                     'qty_gelas' => $qty['qty_gelas'],
+                     'o_kode' => $oKode,
+                     'pengantar' => $nikMap[$nik] ?? $nik,
+                  ]
+               );
+            }
+         }
+      }
+
       $success = $this->dbNa->execute(
          "UPDATE sel_jual_hariini
          SET
@@ -336,8 +433,10 @@ class MonitorminumanController extends Controller {
          ]
       );
 
-      if ($success && $this->dbNa->affectedRows() > 0) {
+      if ($success && $this->dbNa->affectedRows() > 0 && $stockEtalaseSaved) {
          $this->flashSession->success('Status minuman tersaji berhasil disimpan.');
+      } elseif ($success && $this->dbNa->affectedRows() > 0) {
+         $this->flashSession->warning('Status minuman tersaji tersimpan, tetapi pengurangan stock etalase gagal.');
       } else {
          $this->flashSession->warning('Nota tidak ditemukan atau minumannya sudah tersaji.');
       }

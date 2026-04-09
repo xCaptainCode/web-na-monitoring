@@ -27,6 +27,7 @@
                         data-customer="{{ dn.o_cnama }}"
                         data-area="{{ dn.area }}"
                         data-meja="{{ dn.o_meja }}"
+                        data-jmlorg="{{ dn.o_jmlorg }}"
                         data-jam="{{ dn.tunggu }}"
                         data-detail="{{ dn.detail_minuman_base64 }}"
                         data-note="{{ dn.o_note }}"

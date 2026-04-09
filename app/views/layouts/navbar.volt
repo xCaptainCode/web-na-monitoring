@@ -19,7 +19,7 @@
 				</li> #}
 				<li class="nav-item dropdown dropdown-hover">
 					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-						class="nav-link dropdown-toggle">Monitor Minuman</a>
+						class="nav-link dropdown-toggle">Monitor</a>
 					<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-1 shadow mt-0 pt-0" style="left: 0px; right: inherit;">
 						<li><a href="{{ url('monitorminuman/index') }}" class="dropdown-item">Monitor Minuman </a></li>
 						<li><a href="{{ url('monitorminuman/riwayat') }}" class="dropdown-item">Riwayat Nota </a></li>

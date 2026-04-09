@@ -63,9 +63,9 @@
          <div class="modal-body">
             <h1 class="text-bold text-center"><span id="data-kode"></span></h1>
             <div class="row">
-               <div class="col-6"><i class="fa fa-user" aria-hidden="true"></i> <span id="data-customer"></span></div>
+               <div class="col-6"><i class="fa fa-id-card" aria-hidden="true"></i> <span id="data-customer"></span></div>
                <div class="col-6"><i class="fa fa-couch" aria-hidden="true"></i> <span id="data-meja"></span></div>
-               <div class="col-6"><i class="fa fa-map-marker-alt" aria-hidden="true"></i> <span id="data-area"></span></div>
+               <div class="col-6"><i class="fa fa-user" aria-hidden="true"></i> <span id="data-jmlorg"></span></div>
                <div class="col-6"><i class="fa fa-hourglass-2" aria-hidden="true"></i> <span id="data-jam"></span></div>
             </div>
             <div id="scan-warning" class="alert alert-warning py-2 px-3 mt-3 mb-0" hidden>
@@ -74,7 +74,7 @@
             <hr>
             <div class="table-responsive">
                <table class="table table-sm table-bordered mb-0">
-                  <thead class="text-center">
+                  <thead class="text-center bg-primary">
                      <tr>
                         <th width="8%">No</th>
                         <th>Nama Minuman</th>
@@ -167,6 +167,7 @@
          let kode = $(this).attr('data-kode');
          let customer = $(this).attr('data-customer');
          let meja = $(this).attr('data-meja');
+         let jmlorg = $(this).attr('data-jmlorg');
          let area = $(this).attr('data-area');
          let jam = $(this).attr('data-jam');
          let note = $(this).attr('data-note');
@@ -183,6 +184,7 @@
 
          $('#data-kode').text(kode);
          $('#data-customer').text(customer);
+         $('#data-jmlorg').text(jmlorg + ' ORG');
          $('#data-meja').text(meja);
          $('#data-area').text(area);
          $('#data-jam').text(jam);
