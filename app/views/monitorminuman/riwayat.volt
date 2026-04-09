@@ -77,7 +77,7 @@
                            {% endfor %}
                            {% else %}
                            <tr>
-                              <td colspan="6" class="text-center text-muted">Belum ada riwayat nota minuman yang sudah disajikan.</td>
+                              <td colspan="7" class="text-center text-muted">Belum ada riwayat nota minuman yang sudah disajikan.</td>
                            </tr>
                            {% endif %}
                         </tbody>

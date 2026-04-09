@@ -139,7 +139,7 @@ class MonitorminumanController extends Controller {
             INNER JOIN sel_orders_hariini AS o USING (o_kode)
             LEFT JOIN kurang_stocketalase AS ks USING (o_kode)
          WHERE
-            o.o_jmlorg >= 1
+            o.o_jmlorg >= 0
             AND j.j_jamsajiminum IS NULL
             AND ks.jam_kurang IS NULL
             AND EXISTS (
@@ -158,7 +158,7 @@ class MonitorminumanController extends Controller {
          $record['nota_format'] = $notaStr;
          $record['has_meja'] = trim((string) $record['o_meja']) !== '';
          if (!$record['has_meja']) {
-            $record['o_meja'] = '-';
+            $record['o_meja'] = '';
          }
 
          $detailMinuman = $this->dbNa->fetchAll(
@@ -213,7 +213,7 @@ class MonitorminumanController extends Controller {
          LEFT JOIN monitor_area_hariini AS ma USING (o_kode)
          LEFT JOIN kurang_stocketalase AS ks USING (o_kode)
          WHERE m.kategori = 'MINUMAN'
-            AND o.o_jmlorg >= 1
+            AND o.o_jmlorg >= 0
             AND j.j_jamsajiminum IS NULL
             AND ks.jam_kurang IS NULL
          GROUP BY
@@ -248,7 +248,7 @@ class MonitorminumanController extends Controller {
                WHERE od.o_kode = j.o_kode
                   AND m.kategori = 'MINUMAN'
             )
-         ORDER BY j.j_jamsajiminum DESC, j.j_jam DESC";
+         ORDER BY j.j_kode";
 
       $records = $this->dbNa->fetchAll($sql, Db::FETCH_ASSOC);
       $aliasMap = $this->getPenyajiAliasMap();

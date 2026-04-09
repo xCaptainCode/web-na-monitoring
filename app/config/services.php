@@ -129,7 +129,7 @@ $di->setShared('db', function () {
 //This service returns another PostgreSQL database
 $di->set('dbNa', function() {
     return new \Phalcon\Db\Adapter\Pdo\PostgreSQL(array(
-       'host' => 'localhost',
+       'host' => '192.168.1.2',
        'port' => '5432',
        'username' => 'appusers',
        'password' => 'ngrembelokyes',

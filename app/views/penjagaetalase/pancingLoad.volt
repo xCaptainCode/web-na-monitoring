@@ -26,7 +26,6 @@
                   data-jmlorg="{{ dn.o_jmlorg }}"
                   data-meja="{{ dn.o_meja }}"
                   data-area="{{ dn.id_area }}"
-                  data-pengantar="{{ dn.j_pengantar }}"
                   data-piring="{{ dn.qty_piring }}"
                   data-gls="{{ dn.qty_gls }}"
                   data-jam="{{ dn.j_jam }}">

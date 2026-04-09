@@ -177,15 +177,189 @@ class PenjagaetalaseController extends Controller {
       $config = $this->getAreaConfig($idArea);
 
       $this->view->daftar_nota = $this->getAreaData($idArea);
+      $this->view->penjaga_area = json_decode(json_encode($this->db->fetchAll(
+         "SELECT pe.penjaga AS penjaga_id, pt.nama_alias
+          FROM penjaga_etalase pe
+          INNER JOIN pt_mparttimer pt ON pe.penjaga = pt.pt_mparttimer_id
+          WHERE pe.tanggal = current_date AND pe.id_area = :id_area
+          ORDER BY pt.nama_alias",
+         Db::FETCH_ASSOC,
+         ['id_area' => $idArea]
+      )), FALSE);
       $this->view->area_id = $config['id_area'];
       $this->view->area_slug = $config['slug'];
       $this->view->area_label = $config['label'];
    }
    // =========================== END OF PRIVATE METHODS =======================
+
+   public function penjagaAction() {
+      $penjagaEtalase = $this->db->fetchAll(
+         "SELECT 
+               pe.id, 
+               pe.tanggal, 
+               pe.id_area, 
+               ae.area_etalase, 
+               pe.penjaga, 
+               pt.nama_alias 
+            FROM penjaga_etalase pe 
+               INNER JOIN pt_mparttimer pt ON pe.penjaga = pt.pt_mparttimer_id
+               INNER JOIN stock_etalase ae ON pe.id_area = ae.id_area
+            WHERE tanggal = current_date 
+            ORDER BY id_area"
+      , Db::FETCH_ASSOC);
+      $this->view->penjaga_etalase = json_decode(json_encode($penjagaEtalase), FALSE);
+
+      // daftar parttimer Gudang Peralatan untuk dropdown
+      $parttimerGBR = $this->db->fetchAll(
+         "SELECT pt_mparttimer_id, nama_alias 
+          FROM pt_vpresence 
+          WHERE pt_mpk_no = 10 AND tanggal = '2026-01-01'
+          ORDER BY nama_alias",
+         Db::FETCH_ASSOC
+      );
+      $this->view->parttimer_gudang_peralatan = json_decode(json_encode($parttimerGBR), FALSE);
+
+      $areaEtalase = $this->db->fetchAll(
+         "SELECT DISTINCT id_area, area_etalase
+          FROM stock_etalase
+          WHERE id_area != 1
+          ORDER BY id_area",
+         Db::FETCH_ASSOC
+      );
+      $this->view->area_etalase = json_decode(json_encode($areaEtalase), FALSE);
    
-   // ==========================================================================
-   //  END OF PRIVATE METHODS
-   // ==========================================================================
+   }
+
+   public function tambah_penjagaAction() {
+      $this->view->disable();
+
+      if (!$this->request->isPost()) {
+         return $this->response->redirect('penjagaetalase/penjaga');
+      }
+
+      $penjaga = (int) $this->request->getPost('penjaga', 'int');
+      $idArea = (int) $this->request->getPost('id_area', 'int');
+
+      if ($penjaga <= 0 || $idArea <= 0) {
+         $this->flashSession->error('Data penjaga etalase tidak valid.');
+         return $this->response->redirect('penjagaetalase/penjaga');
+      }
+
+      $sql = "INSERT INTO penjaga_etalase (penjaga, id_area) VALUES (:penjaga, :id_area)";
+      $isSaved = $this->db->execute(
+         $sql,
+         [
+            'penjaga' => $penjaga,
+            'id_area' => $idArea,
+         ]
+      );
+
+      if ($isSaved) {
+         $this->flashSession->success('Penjaga etalase berhasil ditambahkan.');
+      } else {
+         $this->flashSession->error('Penjaga etalase gagal ditambahkan.');
+      }
+
+      return $this->response->redirect('penjagaetalase/penjaga');
+   }
+
+   public function edit_penjagaAction() {
+      $this->view->disable();
+
+      if (!$this->request->isPost()) {
+         return $this->response->redirect('penjagaetalase/penjaga');
+      }
+
+      $id = (int) $this->request->getPost('id', 'int');
+      $penjaga = (int) $this->request->getPost('penjaga', 'int');
+      $idArea = (int) $this->request->getPost('id_area', 'int');
+
+      if ($id <= 0 || $penjaga <= 0 || $idArea <= 0) {
+         $this->flashSession->error('Data edit penjaga etalase tidak valid.');
+         return $this->response->redirect('penjagaetalase/penjaga');
+      }
+
+      $record = $this->db->fetchOne(
+         "SELECT id
+          FROM penjaga_etalase
+          WHERE id = :id AND tanggal = current_date
+          LIMIT 1",
+         Db::FETCH_ASSOC,
+         ['id' => $id]
+      );
+
+      if (!$record) {
+         $this->flashSession->warning('Data penjaga etalase tidak ditemukan untuk hari ini.');
+         return $this->response->redirect('penjagaetalase/penjaga');
+      }
+
+      $duplicate = $this->db->fetchOne(
+         "SELECT id
+          FROM penjaga_etalase
+          WHERE tanggal = current_date
+            AND id_area = :id_area
+            AND id <> :id
+          LIMIT 1",
+         Db::FETCH_ASSOC,
+         [
+            'id_area' => $idArea,
+            'id' => $id,
+         ]
+      );
+
+      if ($duplicate) {
+         $this->flashSession->warning('Area etalase tersebut sudah dipakai data lain hari ini.');
+         return $this->response->redirect('penjagaetalase/penjaga');
+      }
+
+      $isUpdated = $this->db->execute(
+         "UPDATE penjaga_etalase
+          SET penjaga = :penjaga, id_area = :id_area, updated_at = CURRENT_TIMESTAMP
+          WHERE id = :id AND tanggal = current_date",
+         [
+            'penjaga' => $penjaga,
+            'id_area' => $idArea,
+            'id' => $id,
+         ]
+      );
+
+      if ($isUpdated) {
+         $this->flashSession->success('Data penjaga etalase berhasil diperbarui.');
+      } else {
+         $this->flashSession->error('Data penjaga etalase gagal diperbarui.');
+      }
+
+      return $this->response->redirect('penjagaetalase/penjaga');
+   }
+
+   public function hapus_penjagaAction() {
+      $this->view->disable();
+
+      if (!$this->request->isPost()) {
+         return $this->response->redirect('penjagaetalase/penjaga');
+      }
+
+      $id = (int) $this->request->getPost('id', 'int');
+
+      if ($id <= 0) {
+         $this->flashSession->error('Data penjaga etalase tidak valid.');
+         return $this->response->redirect('penjagaetalase/penjaga');
+      }
+
+      $isDeleted = $this->db->execute(
+         "DELETE FROM penjaga_etalase
+          WHERE id = :id AND tanggal = current_date",
+         ['id' => $id]
+      );
+
+      if ($isDeleted) {
+         $this->flashSession->success('Data penjaga etalase berhasil dihapus.');
+      } else {
+         $this->flashSession->error('Data penjaga etalase gagal dihapus.');
+      }
+
+      return $this->response->redirect('penjagaetalase/penjaga');
+   }
 
    public function pancingAction() {
       $this->assignAreaViewData(1);
@@ -238,7 +412,7 @@ class PenjagaetalaseController extends Controller {
       $qtyPiring = (int) $this->request->getPost('qty_piring', 'int');
       $qtyGelas = (int) $this->request->getPost('qty_gelas', 'int');
       $oKode = trim((string) $this->request->getPost('o_kode', 'string'));
-      $pengantar = (string) $this->session->get('bo_user_name');
+      $pengantarId = (int) $this->request->getPost('pengantar', 'int');
 
       $redirectPath = $this->getAreaRedirectPath($idArea);
 
@@ -252,10 +426,32 @@ class PenjagaetalaseController extends Controller {
          return $this->response->redirect($redirectPath);
       }
 
-      if ($pengantar === '') {
-         $this->flashSession->error('User pengantar tidak ditemukan.');
+      if ($pengantarId <= 0) {
+         $this->flashSession->error('Pengantar belum dipilih.');
          return $this->response->redirect($redirectPath);
       }
+
+      $pengantarRow = $this->db->fetchOne(
+         "SELECT pt.nama_alias
+          FROM penjaga_etalase pe
+          INNER JOIN pt_mparttimer pt ON pe.penjaga = pt.pt_mparttimer_id
+          WHERE pe.tanggal = current_date
+            AND pe.id_area = :id_area
+            AND pe.penjaga = :penjaga
+          LIMIT 1",
+         Db::FETCH_ASSOC,
+         [
+            'id_area' => $idArea,
+            'penjaga' => $pengantarId,
+         ]
+      );
+
+      if (!$pengantarRow) {
+         $this->flashSession->error('Pengantar tidak sesuai dengan penjaga area ini.');
+         return $this->response->redirect($redirectPath);
+      }
+
+      $pengantar = (string) $pengantarRow['nama_alias'];
 
       $sql = "INSERT INTO kurang_stocketalase (id_area, qty_piring, qty_gelas, o_kode, pengantar) 
          VALUES (:id_area, :qty_piring, :qty_gelas, :o_kode, :pengantar)";

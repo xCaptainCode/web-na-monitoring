@@ -61,10 +61,10 @@
             </button>
          </div>
          <div class="modal-body">
-            <h3 class="text-bold text-center"><span id="data-kode"></span></h3>
+            <h1 class="text-bold text-center"><span id="data-kode"></span></h1>
             <div class="row">
                <div class="col-6"><i class="fa fa-user" aria-hidden="true"></i> <span id="data-customer"></span></div>
-               <div class="col-6"><i class="fa fa-table" aria-hidden="true"></i> <span id="data-meja"></span></div>
+               <div class="col-6"><i class="fa fa-couch" aria-hidden="true"></i> <span id="data-meja"></span></div>
                <div class="col-6"><i class="fa fa-map-marker-alt" aria-hidden="true"></i> <span id="data-area"></span></div>
                <div class="col-6"><i class="fa fa-hourglass-2" aria-hidden="true"></i> <span id="data-jam"></span></div>
             </div>
@@ -105,7 +105,7 @@
                   <div class="d-flex flex-wrap" style="gap:6px;">
                      {% for item in daftar_penyaji_karyawan %}
                      <button type="button" class="btn btn-outline-primary btn-sm btn-penyaji" data-nik="{{ item.nik }}" data-nama="{{ item.nama_alias }}">
-                        {{ item.nama_alias }}
+                        {{ Helpers.ucwords(item.nama_alias) }}
                      </button>
                      {% endfor %}
                   </div>

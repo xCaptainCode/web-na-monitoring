@@ -37,14 +37,14 @@
 					<a id="dropdownSubMenu3" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 						class="nav-link dropdown-toggle">Penjaga Etalase</a>
 					<ul aria-labelledby="dropdownSubMenu3" class="dropdown-menu border-1 shadow mt-0 pt-0" style="left: 0px; right: inherit;">
-						<li><a href="{{ url('penjagaetalase/pancing') }}" class="dropdown-item">Area Pancing </a></li>
+						{# <li><a href="{{ url('penjagaetalase/pancing') }}" class="dropdown-item">Area Pancing </a></li> #}
 						<li><a href="{{ url('penjagaetalase/taman_dino') }}" class="dropdown-item">Area Taman Dino </a></li>
 						<li><a href="{{ url('penjagaetalase/aula_dino') }}" class="dropdown-item">Area Aula Dino </a></li>
 						<li><a href="{{ url('penjagaetalase/outbound') }}" class="dropdown-item">Area Outbound </a></li>
 						
-						{# <li class="dropdown-divider"></li> #}
+						<li class="dropdown-divider"></li>
 						
-						{# <li><a href="{{ url('monitorminuman/index') }}" class="dropdown-item">Monitor Minuman </a></li> #}
+						<li><a href="{{ url('penjagaetalase/penjaga') }}" class="dropdown-item">Plotting Penjaga </a></li>
 						
 					</ul>
 				</li>

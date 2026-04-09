@@ -2,6 +2,10 @@
    .table tbody td, .table thead th {
       font-family: Oxanium;
    }
+
+   .row-click {
+      cursor: pointer;
+   }
 </style>
 
 <div class="content-header">
@@ -47,7 +51,7 @@
                <div class="col-6"><i class="fa fa-user" aria-hidden="true"></i> <span id="data-customer"></span></div>
                <div class="col-6"><i class="fa fa-table" aria-hidden="true"></i> <span id="data-meja"></span></div>
                <div class="col-6"><i class="fa fa-clock" aria-hidden="true"></i> <span id="data-jam"></span></div>
-               <div class="col-6"><i class="fas fa-person-booth    "></i> <span id="data-pengantar"></span></div>
+               <div class="col-6"><i class="fas fa-person-booth"></i> <span id="data-pengantar"></span></div>
             </div>
             <br>
             <table class="table table-sm text-center mb-0">
@@ -61,7 +65,7 @@
                </tr>
             </table>
             <!-- Form -->
-            <form method="post" action="{{ url('penjagaetalase/scan_nota') }}" id="formScanNota" class="mt-3" hidden>
+            <form method="post" action="{{ url('penjagaetalase/scan_nota') }}" id="formScanNota" class="mt-3">
                <input type="hidden" name="id_area" id="form-id-area">
                <input type="hidden" name="o_kode" id="form-o-kode">
                <input type="hidden" name="qty_piring" id="form-qty-piring">
@@ -85,11 +89,29 @@
                      <input type="text" id="form-gelas" class="form-control form-control-sm text-center" readonly>
                   </div>
                </div>
+               <div class="form-group mb-0">
+                  <label class="mb-1 d-block">Pengantar</label>
+                  {% if penjaga_area|length > 1 %}
+                     {% for pj in penjaga_area %}
+                     <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="pengantar-{{ pj.penjaga_id }}" name="pengantar" value="{{ pj.penjaga_id }}" required>
+                        <label for="pengantar-{{ pj.penjaga_id }}" class="custom-control-label">{{ pj.nama_alias }}</label>
+                     </div>
+                     {% endfor %}
+                  {% elseif penjaga_area|length == 1 %}
+                     <input type="hidden" name="pengantar" value="{{ penjaga_area[0].penjaga_id }}">
+                     <input type="text" class="form-control form-control-sm" value="{{ penjaga_area[0].nama_alias }}" readonly>
+                  {% else %}
+                     <div class="alert alert-warning mb-0 py-2 px-2 small">
+                        Belum ada penjaga etalase untuk area ini hari ini.
+                     </div>
+                  {% endif %}
+               </div>
             </form>
          </div>
          <div class="modal-footer justify-content-around">
             <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Batal</button>
-            <button type="submit" form="formScanNota" class="btn btn-sm btn-primary"><i class="fas fa-save"></i> Simpan</button>
+            <button type="submit" form="formScanNota" class="btn btn-sm btn-primary" {% if penjaga_area|length == 0 %}disabled{% endif %}><i class="fas fa-save"></i> Simpan</button>
          </div>
       </div>
    </div>
@@ -122,6 +144,7 @@
       initDataTable();
 
       $('#refreshData').on('click', '.row-click', function () {
+         $('#formScanNota')[0].reset();
 
          let id        = $(this).attr('data-id');
 
@@ -130,7 +153,6 @@
          let jmlorg    = $(this).attr('data-jmlorg');
          let meja      = $(this).attr('data-meja');
          let area      = $(this).attr('data-area');
-         let pengantar = $(this).attr('data-pengantar');
          let piring    = $(this).attr('data-piring');
          let gls       = $(this).attr('data-gls');
          let jam       = $(this).attr('data-jam');
@@ -149,10 +171,16 @@
          $('#data-customer').text(customer);
          $('#data-jmlorg').text(jmlorg);
          $('#data-meja').text(meja);
-         $('#data-pengantar').text(pengantar);
+         $('#data-pengantar').text('Pilih di form');
          $('#data-piring').text(piring);
          $('#data-gelas').text(gls);
          $('#data-jam').text(jam);
+
+         let $pengantarOptions = $('input[name="pengantar"]');
+         if ($pengantarOptions.length > 1) {
+            $pengantarOptions.prop('checked', false);
+            $pengantarOptions.first().prop('checked', true);
+         }
 
          $('#modalDetail').modal('show');
       });
