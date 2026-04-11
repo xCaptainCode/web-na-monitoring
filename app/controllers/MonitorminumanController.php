@@ -121,21 +121,36 @@ class MonitorminumanController extends Controller {
    }
 
    private function hasPenjagaEtalaseToday(): bool {
-      $row = $this->db->fetchOne(
+      $total = 0;
+
+      $rowDb = $this->db->fetchOne(
          "SELECT COUNT(*) AS total
           FROM penjaga_etalase
           WHERE tanggal = current_date",
          Db::FETCH_ASSOC
       );
+      $total += (int) ($rowDb['total'] ?? 0);
 
-      return ((int) ($row['total'] ?? 0)) > 0;
+      if ($total > 0) {
+         return true;
+      }
+
+      // $rowDbNa = $this->dbNa->fetchOne(
+      //    "SELECT COUNT(*) AS total
+      //     FROM penjaga_etalase
+      //     WHERE tanggal = current_date",
+      //    Db::FETCH_ASSOC
+      // );
+      // $total += (int) ($rowDbNa['total'] ?? 0);
+
+      return $total > 0;
    }
 
    private function isAreaPancing(?string $area): bool {
-      return strtoupper(trim((string) $area)) === 'AREA PANCING';
+      return stripos((string) $area, 'PANCING') !== false;
    }
 
-   private function getEtalaseQtyByNota(string $oKode, int $jmlorg): array {
+   private function getQtyPeralatanByNota(string $oKode, int $jmlorg): array {
       $qtyData = $this->dbNa->fetchOne(
          "SELECT
             MAX(CASE WHEN m.is_sajiprg = 't' THEN 1 ELSE 0 END) AS ada_prg,
@@ -285,26 +300,22 @@ class MonitorminumanController extends Controller {
       return json_decode(json_encode($records), false);
    }
 
-   private function getRiwayatMinumanData(): array {
+   private function getRiwayatNotaData(): array {
       $sql = "SELECT
-            j.j_kode,
-            j.o_kode,
-            o.o_cnama,
-            o.o_meja,
-            TO_CHAR(j.j_jamsajiminum, 'HH24:MI') AS jam_saji,
-            TO_CHAR(j.j_jamsajiminum::time - j.j_jam, 'HH24:MI:SS') AS proses,
-            j.j_penyajiminum
-         FROM sel_jual_hariini AS j
-         INNER JOIN sel_orders_hariini AS o USING (o_kode)
+           j.j_kode,
+           j.o_kode,
+           o.o_cnama,
+           o.o_meja,
+           TO_CHAR(j.j_jamsajiminum, 'HH24:MI') AS jam_saji,
+           TO_CHAR(j.j_jamsajiminum::time - j.j_jam, 'HH24:MI:SS') AS proses,
+           j.j_penyaji,
+           j.j_penyajiminum,
+           j.j_penyajigorengan
+         FROM
+           sel_jual_hariini AS j
+           INNER JOIN sel_orders_hariini AS o USING (o_kode)
          WHERE
-            j.j_jamsajiminum IS NOT NULL
-            AND EXISTS (
-               SELECT 1
-               FROM sel_ordersdetil_hariini AS od
-               INNER JOIN sel_mmenu AS m USING (sel_mmenu_id)
-               WHERE od.o_kode = j.o_kode
-                  AND m.kategori = 'MINUMAN'
-            )
+          o_meja NOT IN ('', ' ') OR o_meja IS NULL
          ORDER BY j.j_kode DESC";
 
       $records = $this->dbNa->fetchAll($sql, Db::FETCH_ASSOC);
@@ -313,8 +324,13 @@ class MonitorminumanController extends Controller {
       foreach ($records as &$record) {
          [$notaStr] = $this->formatNotaKode((int) $record['j_kode']);
          $record['nota_format'] = $notaStr;
-         $nik = (string) $record['j_penyajiminum'];
-         $record['pramusaji'] = $aliasMap[$nik] ?? $nik;
+         $nikMinuman = (string) $record['j_penyajiminum'];
+         $nikGorengan = (string) $record['j_penyajigorengan'];
+         $nikMakanan = (string) $record['j_penyaji'];
+         $record['penyaji_minuman'] = $aliasMap[$nikMinuman] ?? $nikMinuman;
+         $record['penyaji_gorengan'] = $aliasMap[$nikGorengan] ?? $nikGorengan;
+         $record['penyaji_makanan'] = $aliasMap[$nikMakanan] ?? $nikMakanan;
+
       }
       unset($record);
 
@@ -341,7 +357,7 @@ class MonitorminumanController extends Controller {
    }
 
    public function riwayatAction() {
-      $this->view->riwayat_nota = $this->getRiwayatMinumanData();
+      $this->view->riwayat_nota = $this->getRiwayatNotaData();
    }
 
    public function scan_notaAction() {
@@ -391,7 +407,7 @@ class MonitorminumanController extends Controller {
       $stockEtalaseSaved = true;
       if ($shouldKurangEtalase) {
          $jmlorg = (int) ($nota['o_jmlorg'] ?? 0);
-         $qty = $this->getEtalaseQtyByNota($oKode, $jmlorg);
+         $qty = $this->getQtyPeralatanByNota($oKode, $jmlorg);
 
          if ($qty['qty_piring'] > 0 || $qty['qty_gelas'] > 0) {
             $existingKurang = $this->dbNa->fetchOne(
@@ -605,6 +621,8 @@ class MonitorminumanController extends Controller {
       $this->view->penyaji = $this->resolvePenyajiName($transaksiData['j_penyaji'] ?? '', $aliasMap);
       $this->view->penyaji_minum = $this->resolvePenyajiName($transaksiData['j_penyajiminum'] ?? '', $aliasMap);
       $this->view->penyaji_gorengan = $this->resolvePenyajiName($transaksiData['j_penyajigorengan'] ?? '', $aliasMap);
-   }
+   }   
+   
+   
    
 }

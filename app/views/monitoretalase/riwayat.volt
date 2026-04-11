@@ -7,20 +7,6 @@
       height: calc(100vh - 260px);
       overflow-y: auto;
    }
-   
-   .row-click,
-   .insert-click,
-   .edit-click {
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-   }
-   
-   .presence-row-clickable:hover,
-   .presence-insert-clickable:hover,
-   .presence-edit-clickable:hover {
-      background-color: rgba(23, 162, 184, 0.12);
-   }
-   
 </style>
 
 <div class="content-header">
@@ -32,7 +18,7 @@
          <div class="col-sm-6 small">
             <ol class="breadcrumb float-sm-right">
                <li class="breadcrumb-item"><a href="#">Home</a></li>
-               <li class="breadcrumb-item"><a href="#">Monitor</a></li>
+               <li class="breadcrumb-item"><a href="#">Monitor Etalase</a></li>
                <li class="breadcrumb-item active">Riwayat Nota</li>
             </ol>
          </div>
@@ -46,7 +32,7 @@
          <div class="col-lg-12">
             <div class="card card-primary card-outline">
                <div class="card-header">
-                  <h3 class="card-title m-0">Daftar Riwayat Nota Minuman Sudah Disajikan</h3>
+                  <h3 class="card-title m-0">Riwayat Penggunaan Peralatan</h3>
                </div>
                <div class="card-body p-2 data-card-body">
                   <div class="table-responsive">
@@ -57,34 +43,42 @@
                               <th>Nota</th>
                               <th>Customer</th>
                               <th>Meja</th>
-                              {# <th>Proses</th> #}
-                              {# <th>Jam Saji</th> #}
-                              <th>P Makanan</th>
-                              <th>P Minuman</th>
-                              <th>P Gorengan</th>
+                              <th>Piring</th>
+                              <th>Gelas</th>
+                              <th>Pengantar</th>
                            </tr>
                         </thead>
                         <tbody>
+                           {% set ttl_prg = 0 %}
+                           {% set ttl_gls = 0 %}
                            {% if riwayat_nota|length > 0 %}
                            {% for item in riwayat_nota %}
-                           <tr class="row-click" data-id="{{ item.o_kode }}">
+                           <tr>
                               <td class="text-center">{{ loop.index }}</td>
                               <td class="text-center text-bold">{{ item.nota_format }}</td>
                               <td>{{ item.o_cnama }}</td>
                               <td class="text-center">{{ item.o_meja }}</td>
-                              {# <td class="text-center">{{ item.proses }}</td> #}
-                              {# <td class="text-center">{{ item.jam_saji }}</td> #}
-                              <td class="text-center">{{ item.penyaji_makanan }}</td>
-                              <td class="text-center">{{ item.penyaji_minuman }}</td>
-                              <td class="text-center">{{ item.penyaji_gorengan }}</td>
+                              <td class="text-center">{{ item.qty_piring }}</td>
+                              <td class="text-center">{{ item.qty_gelas }}</td>
+                              <td class="text-center">{{ item.pengantar }}</td>
                            </tr>
+                           {% set ttl_prg += item.qty_piring %}
+                           {% set ttl_gls += item.qty_gelas %}
                            {% endfor %}
                            {% else %}
                            <tr>
-                              <td colspan="7" class="text-center text-muted">Belum ada riwayat nota minuman yang sudah disajikan.</td>
+                              <td colspan="7" class="text-center text-muted">Belum ada riwayat peralatan.</td>
                            </tr>
                            {% endif %}
                         </tbody>
+                        <tfoot>
+                           <tr>
+                              <td colspan="4">Total</td>
+                              <td class="text-center">{{ ttl_prg }}</td>
+                              <td class="text-center">{{ ttl_gls }}</td>
+                              <td></td>
+                           </tr>
+                        </tfoot>
                      </table>
                   </div>
                </div>
@@ -110,10 +104,5 @@
          lengthChange: false,
          pageLength: 10
       });
-   });
-
-   $(document).on('click', '.row-click', function () {
-      let id = $(this).data('id');
-      window.location.href = `{{ url('monitorminuman/detail_nota/') }}` + id;
    });
 </script>

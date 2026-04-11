@@ -138,4 +138,59 @@ class MonitoretalaseController extends Controller {
 
       return $this->response->redirect('monitoretalase');
    }
+
+   private function formatNotaKode(int $jkode): array {
+      $row = $this->dbNa->fetchOne("
+         SELECT COALESCE(startwith,1) AS startwith, COALESCE(reafter,100) AS reafter
+         FROM sel_formatnota
+         ORDER BY tanggal DESC, jam DESC
+         LIMIT 1
+      ", \Phalcon\Db::FETCH_ASSOC) ?: ['startwith' => 1, 'reafter' => 100];
+
+      $startwith = (int) $row['startwith'];
+      $reafter   = (int) $row['reafter'];
+      $denom     = max(1, $reafter - ($startwith - 1));
+
+      if ($jkode <= 0) {
+         $nomor   = 0;
+         $bintang = 0;
+      } elseif ($jkode <= $reafter) {
+         $nomor   = $jkode;
+         $bintang = 0;
+      } else {
+         $offset  = $jkode - ($reafter + 1);
+         $bintang = intdiv($offset, $denom) + 1;
+         $nomor   = $startwith + ($offset % $denom);
+      }
+
+      $nomor3  = str_pad((string) $nomor, 3, '0', STR_PAD_LEFT);
+      $notaStr = $nomor3 . '*' . $bintang;
+
+      return [$notaStr, $nomor, $bintang, $denom, $startwith, $reafter];
+   }
+
+   public function riwayatAction() {
+      $sql = "SELECT
+            j.j_kode,
+            o.o_cnama,
+            o.o_meja,
+            k.qty_piring,
+            k.qty_gelas,
+            k.pengantar
+         FROM kurang_stocketalase k
+         INNER JOIN sel_orders_hariini o ON k.o_kode = o.o_kode
+         INNER JOIN sel_jual_hariini j ON k.o_kode = j.o_kode
+         WHERE k.tgl_kurang = current_date
+         ORDER BY k.jam_kurang DESC";
+
+      $records = $this->dbNa->fetchAll($sql, Db::FETCH_ASSOC);
+
+      foreach ($records as &$record) {
+         [$notaStr]             = $this->formatNotaKode((int) $record['j_kode']);
+         $record['nota_format'] = $notaStr;
+      }
+      unset($record);
+
+      $this->view->riwayat_nota = json_decode(json_encode($records), FALSE);
+   }
 }
