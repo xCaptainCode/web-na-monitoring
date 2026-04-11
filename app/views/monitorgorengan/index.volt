@@ -31,13 +31,13 @@
    <div class="container">
       <div class="row mb-2">
          <div class="col-sm-6">
-            <h1 class="m-0"> Monitor Minuman</h1>
+            <h1 class="m-0"> Monitor Tambahan & Snack</h1>
          </div>
          <div class="col-sm-6 small">
             <ol class="breadcrumb float-sm-right">
                <li class="breadcrumb-item"><a href="#">Home</a></li>
                <li class="breadcrumb-item"><a href="#">Monitor</a></li>
-               <li class="breadcrumb-item active">Monitor Minuman</li>
+               <li class="breadcrumb-item active">Monitor Tambahan & Snack</li>
             </ol>
          </div>
       </div>
@@ -47,7 +47,7 @@
 <div class="content">
    <div class="container">
       <div id="refreshData">
-         {% include 'monitorminuman/load.volt' %}
+         {% include 'monitorgorengan/load.volt' %}
       </div>
    </div>
 </div>
@@ -55,8 +55,8 @@
 <div id="modalDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDetailTitle" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
-         <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title" id="modalDetailTitle">Detail Minuman Belum Tersaji</h5>
+         <div class="modal-header bg-indigo text-white">
+            <h5 class="modal-title" id="modalDetailTitle">Detail Tambahan & Snack Belum Tersaji</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
             </button>
@@ -75,15 +75,15 @@
             <hr>
             <div class="table-responsive">
                <table class="table table-sm table-bordered mb-0">
-                  <thead class="text-center bg-primary">
+                  <thead class="text-center bg-indigo">
                      <tr>
                         <th width="8%">No</th>
-                        <th>Nama Minuman</th>
+                        <th>Nama Menu</th>
                         <th width="15%">Qty</th>
                         <th width="15%">Satuan</th>
                      </tr>
                   </thead>
-                  <tbody id="detail-minuman-body"></tbody>
+                  <tbody id="detail-nota-body"></tbody>
                </table>
             </div>
             <!-- note -->
@@ -92,13 +92,13 @@
                <input type="text" name="" id="form-note" class="form-control form-control-sm" readonly>
             </div>
             
-            <form method="post" action="{{ url('monitorminuman/scan_nota') }}" id="formScanMinuman" class="mt-3">
+            <form method="post" action="{{ url('monitorgorengan/scan_nota') }}" id="formScanGorengan" class="mt-3">
                <input type="hidden" name="o_kode" id="form-o-kode">
                <input type="hidden" name="nik_penyaji" id="form-nik-penyaji">
 
                <div class="form-group mb-2">
-                  <label for="form-penyaji-nama" class="mb-1">Penyaji Minuman</label>
-                  <input type="text" id="form-penyaji-nama" class="form-control form-control-sm text-center font-weight-bold" readonly placeholder="Pilih penyaji minuman">
+                  <label for="form-penyaji-nama" class="mb-1">Penyaji</label>
+                  <input type="text" id="form-penyaji-nama" class="form-control form-control-sm text-center font-weight-bold" readonly placeholder="Pilih penyaji gorengan">
                </div>
 
                <div class="mb-2">
@@ -126,7 +126,7 @@
          </div>
          <div class="modal-footer justify-content-around">
             <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Tutup</button>
-            <button type="submit" form="formScanMinuman" class="btn btn-sm btn-primary" id="btn-simpan-saji">
+            <button type="submit" form="formScanGorengan" class="btn btn-sm btn-primary" id="btn-simpan-saji">
                <i class="fas fa-save"></i> Simpan
             </button>
          </div>
@@ -174,13 +174,13 @@
          let note = $(this).attr('data-note');
          let hasMeja = $(this).attr('data-has-meja') === '1';
          let detail = $(this).attr('data-detail');
-         let detailMinuman = [];
+         let detailGorengan = [];
 
          try {
             let detailJson = detail ? atob(detail) : '[]';
-            detailMinuman = JSON.parse(detailJson);
+            detailGorengan = JSON.parse(detailJson);
          } catch (error) {
-            detailMinuman = [];
+            detailGorengan = [];
          }
 
          $('#data-kode').text(kode);
@@ -199,10 +199,10 @@
 
          let rows = '';
 
-         if (detailMinuman.length === 0) {
-            rows = '<tr><td colspan="4" class="text-center text-muted">Belum ada detail minuman.</td></tr>';
+         if (detailGorengan.length === 0) {
+            rows = '<tr><td colspan="4" class="text-center text-muted">Belum ada detail gorengan.</td></tr>';
          } else {
-            $.each(detailMinuman, function (index, item) {
+            $.each(detailGorengan, function (index, item) {
                rows += '<tr>' +
                   '<td class="text-center">' + (index + 1) + '</td>' +
                   '<td>' + item.nama_olahan + '</td>' +
@@ -212,7 +212,7 @@
             });
          }
 
-         $('#detail-minuman-body').html(rows);
+         $('#detail-nota-body').html(rows);
          $('#modalDetail').modal('show');
       });
 
@@ -231,13 +231,13 @@
          $('#form-penyaji-nama').val(nama + ' (' + nik + ')');
       });
 
-      $('#formScanMinuman').on('submit', function () {
+      $('#formScanGorengan').on('submit', function () {
          if ($('#btn-simpan-saji').prop('disabled')) {
             return false;
          }
 
          if ($('#form-nik-penyaji').val() === '') {
-            alert('Pilih penyaji minuman terlebih dahulu.');
+            alert('Pilih penyaji gorengan terlebih dahulu.');
             return false;
          }
 
@@ -252,7 +252,7 @@
 
       function refreshTable() {
          $.ajax({
-            url: "{{ url('monitorminuman/load') }}",
+            url: "{{ url('monitorgorengan/load') }}",
             type: "GET",
             success: function (response) {
                $('#refreshData').html(response);

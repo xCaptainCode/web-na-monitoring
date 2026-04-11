@@ -21,8 +21,12 @@
 					<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 						class="nav-link dropdown-toggle">Monitor</a>
 					<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-1 shadow mt-0 pt-0" style="left: 0px; right: inherit;">
-						<li><a href="{{ url('monitorminuman/index') }}" class="dropdown-item">Monitor Minuman </a></li>
-						<li><a href="{{ url('monitorminuman/riwayat') }}" class="dropdown-item">Riwayat Nota </a></li>
+						<li><a href="{{ url('monitormakanan/index') }}" class="dropdown-item"><i class="fas fa-utensils"></i> Makanan </a></li>
+						<li><a href="{{ url('monitorminuman/index') }}" class="dropdown-item"><i class="fas fa-glass-martini"></i> Minuman </a></li>
+						<li><a href="{{ url('monitorgorengan/index') }}" class="dropdown-item"><i class="fas fa-bowl-food"></i> Tambahan & Snack </a></li>
+						<li class="dropdown-divider"></li>
+
+						<li><a href="{{ url('monitorminuman/riwayat') }}" class="dropdown-item"><i class="fas fa-receipt"></i> Riwayat Nota </a></li>
 					</ul>
 				</li>
 				<li class="nav-item dropdown dropdown-hover">

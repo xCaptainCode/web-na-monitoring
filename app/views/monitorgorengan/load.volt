@@ -1,13 +1,13 @@
 <div class="row">
    <div class="col-lg-8">
-      <div class="card card-primary card-outline presence-card-body">
+      <div class="card card-indigo card-outline presence-card-body">
          <div class="card-header">
             <h3 class="card-title m-0">Daftar Nota Belum Saji</h3>
          </div>
          <div class="card-body p-2">
             <div class="table-responsive">
                <table id="dataTable" class="table table-sm table-bordered table-striped table-hover">
-                  <thead class="text-center bg-primary">
+                  <thead class="text-center bg-indigo">
                      <tr>
                         <th>Nota</th>
                         <th>Customer</th>
@@ -29,7 +29,7 @@
                         data-meja="{{ dn.o_meja }}"
                         data-jmlorg="{{ dn.o_jmlorg }}"
                         data-jam="{{ dn.tunggu }}"
-                        data-detail="{{ dn.detail_minuman_base64 }}"
+                        data-detail="{{ dn.detail_nota_base64 }}"
                         data-note="{{ dn.o_note }}"
                         data-has-meja="{% if dn.has_meja %}1{% else %}0{% endif %}">
                         <td class="text-center text-bold">{{ dn.nota_format }}</td>
@@ -41,7 +41,7 @@
                            {% endif %}
                         </td>
                         <td class="text-center">{{ dn.tunggu }}</td>
-                        <td class="text-center">{{ dn.jumlah_minuman }}</td>
+                        <td class="text-center">{{ dn.jumlah_nota }}</td>
                      </tr>
                      {% endfor %}
                      {% if hasRow == false %}
@@ -57,14 +57,14 @@
    </div>
 
    <div class="col-lg-4">
-      <div class="card card-info card-outline presence-card-body">
+      <div class="card card-pink card-outline presence-card-body">
          <div class="card-header">
             <h3 class="card-title m-0">Daftar Menu Sudah Di Order</h3>
          </div>
          <div class="card-body p-2">
             <div class="table-responsive">
                <table class="table table-sm table-bordered table-striped table-hover mb-0">
-                  <thead class="text-center bg-info">
+                  <thead class="text-center bg-pink">
                      <tr>
                         <th>Menu</th>
                         <th>Qty</th>
@@ -73,7 +73,7 @@
                   </thead>
                   <tbody>
                      {% set hasOrder = false %}
-                     {% for item in daftar_minuman_order %}
+                     {% for item in daftar_nota_order %}
                      {% set hasOrder = true %}
                      <tr>
                         <td>{{ item.nama_olahan }}</td>
