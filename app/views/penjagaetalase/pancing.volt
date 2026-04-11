@@ -48,10 +48,10 @@
          <div class="modal-body">
             <h3 class="text-bold text-center"><span id="data-kode"></span></h3>
             <div class="row">
-               <div class="col-6"><i class="fa fa-user" aria-hidden="true"></i> <span id="data-customer"></span></div>
+               <div class="col-6"><i class="fa fa-id-card" aria-hidden="true"></i> <span id="data-customer"></span></div>
                <div class="col-6"><i class="fa fa-table" aria-hidden="true"></i> <span id="data-meja"></span></div>
+               <div class="col-6"><i class="fas fa-user"></i> <span id="data-jmlorg"></span></div>
                <div class="col-6"><i class="fa fa-clock" aria-hidden="true"></i> <span id="data-jam"></span></div>
-               <div class="col-6"><i class="fas fa-person-booth"></i> <span id="data-pengantar"></span></div>
             </div>
             <br>
             <table class="table table-sm text-center mb-0">
@@ -71,15 +71,15 @@
                <input type="hidden" name="qty_piring" id="form-qty-piring">
                <input type="hidden" name="qty_gelas" id="form-qty-gelas">
 
-               <div class="form-group mb-2">
+               <div class="form-group mb-2" hidden>
                   <label for="form-nomor-nota" class="mb-1">Nota</label>
                   <input type="text" id="form-nomor-nota" class="form-control form-control-sm" readonly>
                </div>
-               <div class="form-group mb-2">
+               <div class="form-group mb-2" hidden>
                   <label for="form-customer" class="mb-1">Customer</label>
                   <input type="text" id="form-customer" class="form-control form-control-sm" readonly>
                </div>
-               <div class="form-row">
+               <div class="form-row" hidden>
                   <div class="form-group col-6 mb-2">
                      <label for="form-piring" class="mb-1">Qty Piring</label>
                      <input type="text" id="form-piring" class="form-control form-control-sm text-center" readonly>

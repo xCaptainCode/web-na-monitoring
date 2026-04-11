@@ -42,16 +42,16 @@ class PenjagaetalaseController extends Controller {
 
    private function getAreaRedirectPath(int $idArea): string {
       switch ($idArea) {
-         case 1:
-            return 'penjagaetalase/pancing';
-         case 2:
-            return 'penjagaetalase/taman_dino';
-         case 3:
-            return 'penjagaetalase/aula_dino';
-         case 4:
-            return 'penjagaetalase/outbound';
-         default:
-            return 'penjagaetalase/pancing';
+      case 1:
+         return 'penjagaetalase/pancing';
+      case 2:
+         return 'penjagaetalase/taman_dino';
+      case 3:
+         return 'penjagaetalase/aula_dino';
+      case 4:
+         return 'penjagaetalase/outbound';
+      default:
+         return 'penjagaetalase/pancing';
       }
    }
 
@@ -59,26 +59,26 @@ class PenjagaetalaseController extends Controller {
       $configs = [
          1 => [
             'id_area' => 1,
-            'slug' => 'pancing',
-            'label' => 'Pancing',
+            'slug'    => 'pancing',
+            'label'   => 'Pancing',
             'db_area' => 'AREA PANCING',
          ],
          2 => [
             'id_area' => 2,
-            'slug' => 'taman_dino',
-            'label' => 'Taman Dino',
+            'slug'    => 'taman_dino',
+            'label'   => 'Taman Dino',
             'db_area' => 'AREA TAMAN DINO',
          ],
          3 => [
             'id_area' => 3,
-            'slug' => 'aula_dino',
-            'label' => 'Aula Dino',
+            'slug'    => 'aula_dino',
+            'label'   => 'Aula Dino',
             'db_area' => 'AREA AULA DINO',
          ],
          4 => [
             'id_area' => 4,
-            'slug' => 'outbound',
-            'label' => 'Outbound',
+            'slug'    => 'outbound',
+            'label'   => 'Outbound',
             'db_area' => 'AREA OUTBOUND',
          ],
       ];
@@ -114,7 +114,7 @@ class PenjagaetalaseController extends Controller {
             AND area = :db_area
             AND (SELECT COUNT(*) FROM kurang_stocketalase WHERE o_kode = j.o_kode) = 0
          ORDER BY j.j_jam;";
-      $records = $this->dbNa->fetchAll($sql,Db::FETCH_ASSOC,[
+      $records = $this->dbNa->fetchAll($sql, Db::FETCH_ASSOC, [
          'id_area' => $idArea,
          'db_area' => $dbArea,
       ]);
@@ -176,7 +176,7 @@ class PenjagaetalaseController extends Controller {
    private function assignAreaViewData(int $idArea): void {
       $config = $this->getAreaConfig($idArea);
 
-      $this->view->daftar_nota = $this->getAreaData($idArea);
+      $this->view->daftar_nota  = $this->getAreaData($idArea);
       $this->view->penjaga_area = json_decode(json_encode($this->db->fetchAll(
          "SELECT pe.penjaga AS penjaga_id, pt.nama_alias
           FROM penjaga_etalase pe
@@ -186,33 +186,33 @@ class PenjagaetalaseController extends Controller {
          Db::FETCH_ASSOC,
          ['id_area' => $idArea]
       )), FALSE);
-      $this->view->area_id = $config['id_area'];
-      $this->view->area_slug = $config['slug'];
+      $this->view->area_id    = $config['id_area'];
+      $this->view->area_slug  = $config['slug'];
       $this->view->area_label = $config['label'];
    }
    // =========================== END OF PRIVATE METHODS =======================
 
    public function penjagaAction() {
       $penjagaEtalase = $this->db->fetchAll(
-         "SELECT 
-               pe.id, 
-               pe.tanggal, 
-               pe.id_area, 
-               ae.area_etalase, 
-               pe.penjaga, 
-               pt.nama_alias 
-            FROM penjaga_etalase pe 
+         "SELECT
+               pe.id,
+               pe.tanggal,
+               pe.id_area,
+               ae.area_etalase,
+               pe.penjaga,
+               pt.nama_alias
+            FROM penjaga_etalase pe
                INNER JOIN pt_mparttimer pt ON pe.penjaga = pt.pt_mparttimer_id
                INNER JOIN stock_etalase ae ON pe.id_area = ae.id_area
-            WHERE tanggal = current_date 
+            WHERE tanggal = current_date
             ORDER BY id_area"
-      , Db::FETCH_ASSOC);
+         , Db::FETCH_ASSOC);
       $this->view->penjaga_etalase = json_decode(json_encode($penjagaEtalase), FALSE);
 
       // daftar parttimer Gudang Peralatan untuk dropdown
       $parttimerGBR = $this->db->fetchAll(
-         "SELECT pt_mparttimer_id, nama_alias 
-          FROM pt_vpresence 
+         "SELECT pt_mparttimer_id, nama_alias
+          FROM pt_vpresence
           WHERE pt_mpk_no = 10 AND tanggal = '2026-01-01'
           ORDER BY nama_alias",
          Db::FETCH_ASSOC
@@ -227,25 +227,25 @@ class PenjagaetalaseController extends Controller {
          Db::FETCH_ASSOC
       );
       $this->view->area_etalase = json_decode(json_encode($areaEtalase), FALSE);
-   
+
    }
 
    public function tambah_penjagaAction() {
       $this->view->disable();
 
-      if (!$this->request->isPost()) {
+      if (! $this->request->isPost()) {
          return $this->response->redirect('penjagaetalase/penjaga');
       }
 
       $penjaga = (int) $this->request->getPost('penjaga', 'int');
-      $idArea = (int) $this->request->getPost('id_area', 'int');
+      $idArea  = (int) $this->request->getPost('id_area', 'int');
 
       if ($penjaga <= 0 || $idArea <= 0) {
          $this->flashSession->error('Data penjaga etalase tidak valid.');
          return $this->response->redirect('penjagaetalase/penjaga');
       }
 
-      $sql = "INSERT INTO penjaga_etalase (penjaga, id_area) VALUES (:penjaga, :id_area)";
+      $sql     = "INSERT INTO penjaga_etalase (penjaga, id_area) VALUES (:penjaga, :id_area)";
       $isSaved = $this->db->execute(
          $sql,
          [
@@ -266,13 +266,13 @@ class PenjagaetalaseController extends Controller {
    public function edit_penjagaAction() {
       $this->view->disable();
 
-      if (!$this->request->isPost()) {
+      if (! $this->request->isPost()) {
          return $this->response->redirect('penjagaetalase/penjaga');
       }
 
-      $id = (int) $this->request->getPost('id', 'int');
+      $id      = (int) $this->request->getPost('id', 'int');
       $penjaga = (int) $this->request->getPost('penjaga', 'int');
-      $idArea = (int) $this->request->getPost('id_area', 'int');
+      $idArea  = (int) $this->request->getPost('id_area', 'int');
 
       if ($id <= 0 || $penjaga <= 0 || $idArea <= 0) {
          $this->flashSession->error('Data edit penjaga etalase tidak valid.');
@@ -288,7 +288,7 @@ class PenjagaetalaseController extends Controller {
          ['id' => $id]
       );
 
-      if (!$record) {
+      if (! $record) {
          $this->flashSession->warning('Data penjaga etalase tidak ditemukan untuk hari ini.');
          return $this->response->redirect('penjagaetalase/penjaga');
       }
@@ -303,7 +303,7 @@ class PenjagaetalaseController extends Controller {
          Db::FETCH_ASSOC,
          [
             'id_area' => $idArea,
-            'id' => $id,
+            'id'      => $id,
          ]
       );
 
@@ -319,7 +319,7 @@ class PenjagaetalaseController extends Controller {
          [
             'penjaga' => $penjaga,
             'id_area' => $idArea,
-            'id' => $id,
+            'id'      => $id,
          ]
       );
 
@@ -335,7 +335,7 @@ class PenjagaetalaseController extends Controller {
    public function hapus_penjagaAction() {
       $this->view->disable();
 
-      if (!$this->request->isPost()) {
+      if (! $this->request->isPost()) {
          return $this->response->redirect('penjagaetalase/penjaga');
       }
 
@@ -404,14 +404,14 @@ class PenjagaetalaseController extends Controller {
    public function scan_notaAction() {
       $this->view->disable();
 
-      if (!$this->request->isPost()) {
+      if (! $this->request->isPost()) {
          return $this->response->redirect('penjagaetalase/pancing');
       }
 
-      $idArea = (int) $this->request->getPost('id_area', 'int');
-      $qtyPiring = (int) $this->request->getPost('qty_piring', 'int');
-      $qtyGelas = (int) $this->request->getPost('qty_gelas', 'int');
-      $oKode = trim((string) $this->request->getPost('o_kode', 'string'));
+      $idArea      = (int) $this->request->getPost('id_area', 'int');
+      $qtyPiring   = (int) $this->request->getPost('qty_piring', 'int');
+      $qtyGelas    = (int) $this->request->getPost('qty_gelas', 'int');
+      $oKode       = trim((string) $this->request->getPost('o_kode', 'string'));
       $pengantarId = (int) $this->request->getPost('pengantar', 'int');
 
       $redirectPath = $this->getAreaRedirectPath($idArea);
@@ -446,23 +446,23 @@ class PenjagaetalaseController extends Controller {
          ]
       );
 
-      if (!$pengantarRow) {
+      if (! $pengantarRow) {
          $this->flashSession->error('Pengantar tidak sesuai dengan penjaga area ini.');
          return $this->response->redirect($redirectPath);
       }
 
       $pengantar = (string) $pengantarRow['nama_alias'];
 
-      $sql = "INSERT INTO kurang_stocketalase (id_area, qty_piring, qty_gelas, o_kode, pengantar) 
+      $sql = "INSERT INTO kurang_stocketalase (id_area, qty_piring, qty_gelas, o_kode, pengantar)
          VALUES (:id_area, :qty_piring, :qty_gelas, :o_kode, :pengantar)";
 
       $success = $this->dbNa->execute(
-         $sql,[
-            'id_area' => $idArea,
+         $sql, [
+            'id_area'    => $idArea,
             'qty_piring' => $qtyPiring,
-            'qty_gelas' => $qtyGelas,
-            'o_kode' => $oKode,
-            'pengantar' => $pengantar,
+            'qty_gelas'  => $qtyGelas,
+            'o_kode'     => $oKode,
+            'pengantar'  => $pengantar,
          ]
       );
 
@@ -474,5 +474,5 @@ class PenjagaetalaseController extends Controller {
 
       return $this->response->redirect($redirectPath);
    }
-   
+
 }
