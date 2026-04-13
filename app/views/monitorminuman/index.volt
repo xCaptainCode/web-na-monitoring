@@ -137,25 +137,25 @@
 <script>
    $(document).ready(function () {
 
-      function initDataTable() {
-         if (!$.fn.DataTable) {
-            return;
-         }
-
-         if ($.fn.DataTable.isDataTable('#dataTable')) {
-            $('#dataTable').DataTable().destroy();
-         }
-
-         $('#dataTable').DataTable({
-            responsive: false,
-            autoWidth: false,
-            paging: false,
-            searching: true,
-            ordering: true,
-            info: true,
-            lengthChange: false
-         });
-      }
+      // function initDataTable() {
+      //    if (!$.fn.DataTable) {
+      //       return;
+      //    }
+// 
+      //    if ($.fn.DataTable.isDataTable('#dataTable')) {
+      //       $('#dataTable').DataTable().destroy();
+      //    }
+// 
+      //    $('#dataTable').DataTable({
+      //       responsive: false,
+      //       autoWidth: false,
+      //       paging: false,
+      //       searching: true,
+      //       ordering: true,
+      //       info: true,
+      //       lengthChange: false
+      //    });
+      // }
 
       // initDataTable();
 

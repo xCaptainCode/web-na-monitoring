@@ -75,7 +75,7 @@ class MonitoretalaseController extends Controller {
       $idAreas = $this->request->getPost('id_area');
       $qtyPirings = $this->request->getPost('qty_piring');
       $qtyGelas = $this->request->getPost('qty_gelas');
-      $pengantar = $this->session->get('bo_user_name');
+      $pengantar = $this->session->get('bo_user_name') ? $this->session->get('bo_user_name') : 'Unknown';
 
       if (!is_array($idAreas) || !is_array($qtyPirings) || !is_array($qtyGelas) || empty($pengantar)) {
          $this->flashSession->error('Data stock peralatan tidak valid.');

@@ -26,7 +26,7 @@
 						<li><a href="{{ url('monitorgorengan/index') }}" class="dropdown-item"><i class="fas fa-bowl-food"></i> Tambahan & Snack </a></li>
 						<li class="dropdown-divider"></li>
 
-						<li><a href="{{ url('monitorminuman/riwayat') }}" class="dropdown-item"><i class="fas fa-receipt"></i> Riwayat Nota </a></li>
+						<li><a href="{{ url('monitorminuman/riwayat') }}" class="dropdown-item"><i class="fas fa-receipt"></i> Info Nota </a></li>
 					</ul>
 				</li>
 				<li class="nav-item dropdown dropdown-hover">
@@ -194,8 +194,13 @@
 					<a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
 				</div>
 			</li>
+			<li class="nav-item" hidden>
+				<a class="nav-link" data-widget="fullscreen" href="#" role="button">
+					<i class="fas fa-expand-arrows-alt"></i>
+				</a>
+			</li>
 			<!-- User Profile Dropdown Menu-->
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" hidden>
 				<a class="nav-link" data-toggle="dropdown" href="#">
 					<div class="user-panel mb-0 d-flex">
 						<div class="image mt-1 pb-2">

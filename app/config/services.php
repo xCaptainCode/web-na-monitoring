@@ -194,13 +194,13 @@ $di->setShared('session', function () {
 /**
  * Add routing capabilities
  */
-$di->set('router', function () {
-    //$router = new Router(false); // disable default routes
-    $router = new Router(false);
+// $di->set('router', function () {
+//     //$router = new Router(false); // disable default routes
+//     $router = new Router(false);
 	
-    include APP_PATH . "/config/router.php";
-    return $router;
-});
+//     include APP_PATH . "/config/router.php";
+//     return $router;
+// });
 
 /**
  * Dispatcher Error Handler
