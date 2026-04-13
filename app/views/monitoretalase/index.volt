@@ -47,7 +47,7 @@
                               <th class="bg-success">G</th>
                            </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="stocks-tbody">
                            {% for st in stocks %}
                            <tr>
                               <td class="text-center">{{ loop.index }}</td>
@@ -173,5 +173,41 @@
          $button.prop('disabled', true);
          $button.html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i> Memproses...');
       });
+
+      function updateStocks() {
+         $.ajax({
+            url: '{{ url("monitoretalase/getData") }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+               var tbody = '';
+               $.each(data.stocks, function(index, st) {
+                  tbody += '<tr>' +
+                     '<td class="text-center">' + (index + 1) + '</td>' +
+                     '<td class="text-left">' + st.area_etalase + '</td>' +
+                     '<td class="text-center table-info">' + st.stock_awal_piring + '</td>' +
+                     '<td class="text-center table-info">' + st.stock_awal_gelas + '</td>' +
+                     '<td class="text-center table-danger">' + st.terpakai_piring + '</td>' +
+                     '<td class="text-center table-danger">' + st.terpakai_gelas + '</td>' +
+                     '<td class="text-center table-success">' + st.stock_sisa_piring + '</td>' +
+                     '<td class="text-center table-success">' + st.stock_sisa_gelas + '</td>' +
+                     '</tr>';
+               });
+               tbody += '<tr class="font-weight-bold bg-light">' +
+                  '<td colspan="2" class="text-center">Total</td>' +
+                  '<td class="text-center table-info">' + data.totals.stock_awal_piring + '</td>' +
+                  '<td class="text-center table-info">' + data.totals.stock_awal_gelas + '</td>' +
+                  '<td class="text-center table-danger">' + data.totals.terpakai_piring + '</td>' +
+                  '<td class="text-center table-danger">' + data.totals.terpakai_gelas + '</td>' +
+                  '<td class="text-center table-success">' + data.totals.stock_sisa_piring + '</td>' +
+                  '<td class="text-center table-success">' + data.totals.stock_sisa_gelas + '</td>' +
+                  '</tr>';
+               $('#stocks-tbody').html(tbody);
+            }
+         });
+      }
+
+      // Auto refresh setiap 3 detik menggunakan AJAX
+      setInterval(updateStocks, 3000);
    });
 </script>
