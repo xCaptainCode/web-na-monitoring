@@ -215,13 +215,14 @@ class MonitorminumanController extends Controller {
             o.o_jmlorg >= 0
             AND j.j_jamsajiminum IS NULL
             AND ks.jam_kurang IS NULL
-            AND (EXISTS (
+            AND EXISTS (
                SELECT 1
                FROM sel_ordersdetil_hariini AS od
                INNER JOIN sel_mmenu AS m USING (sel_mmenu_id)
                WHERE od.o_kode = j.o_kode
                   AND m.kategori = 'MINUMAN'
-            ) OR o.o_note NOT LIKE 'TAMB%')
+            ) 
+            AND o.o_note NOT LIKE 'TAMB%'
          ORDER BY j.j_jam";
 
       $records = $this->dbNa->fetchAll($sql, Db::FETCH_ASSOC);

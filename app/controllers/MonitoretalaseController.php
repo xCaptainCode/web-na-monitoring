@@ -75,7 +75,7 @@ class MonitoretalaseController extends Controller {
       $idAreas = $this->request->getPost('id_area');
       $qtyPirings = $this->request->getPost('qty_piring');
       $qtyGelas = $this->request->getPost('qty_gelas');
-      $pengantar = $this->session->get('bo_user_name') ? $this->session->get('bo_user_name') : 'Unknown';
+      $pengantar = $this->session->get('bo_user_name') ? $this->session->get('bo_user_name') : 'Anonymous';
 
       if (!is_array($idAreas) || !is_array($qtyPirings) || !is_array($qtyGelas) || empty($pengantar)) {
          $this->flashSession->error('Data stock peralatan tidak valid.');
@@ -169,7 +169,8 @@ class MonitoretalaseController extends Controller {
       return [$notaStr, $nomor, $bintang, $denom, $startwith, $reafter];
    }
 
-   public function riwayatAction() {
+   public function riwayatAction()
+   {
       $sql = "SELECT
             j.j_kode,
             o.o_cnama,
@@ -186,11 +187,73 @@ class MonitoretalaseController extends Controller {
       $records = $this->dbNa->fetchAll($sql, Db::FETCH_ASSOC);
 
       foreach ($records as &$record) {
-         [$notaStr]             = $this->formatNotaKode((int) $record['j_kode']);
+         [$notaStr] = $this->formatNotaKode((int) $record['j_kode']);
          $record['nota_format'] = $notaStr;
       }
       unset($record);
+   }
 
-      $this->view->riwayat_nota = json_decode(json_encode($records), FALSE);
+   public function getDataAction() {
+      $this->view->disable();
+
+      $stocksQuery = 
+         "SELECT
+            se.id_area,
+            se.area_etalase,
+            COALESCE(tambah.stock_awal_piring, 0) AS stock_awal_piring,
+            COALESCE(tambah.stock_awal_gelas, 0) AS stock_awal_gelas,
+            COALESCE(kurang.terpakai_piring, 0) AS terpakai_piring,
+            COALESCE(kurang.terpakai_gelas, 0) AS terpakai_gelas,
+            COALESCE(se.stock_piring, 0) AS stock_sisa_piring,
+            COALESCE(se.stock_gelas, 0) AS stock_sisa_gelas
+         FROM stock_etalase se
+         LEFT JOIN (
+            SELECT
+               id_area,
+               SUM(qty_piring) AS stock_awal_piring,
+               SUM(qty_gelas) AS stock_awal_gelas
+            FROM tambah_stocketalase
+            WHERE tgl_tambah = current_date
+            GROUP BY id_area
+         ) tambah ON tambah.id_area = se.id_area
+         LEFT JOIN (
+            SELECT
+               id_area,
+               SUM(qty_piring) AS terpakai_piring,
+               SUM(qty_gelas) AS terpakai_gelas
+            FROM kurang_stocketalase
+            WHERE tgl_kurang = current_date
+            GROUP BY id_area
+         ) kurang ON kurang.id_area = se.id_area
+         ORDER BY se.id_area
+      ";
+
+      $records = $this->dbNa->fetchAll($stocksQuery, Db::FETCH_ASSOC);
+
+      $totals = array(
+         'stock_awal_piring' => 0,
+         'stock_awal_gelas' => 0,
+         'terpakai_piring' => 0,
+         'terpakai_gelas' => 0,
+         'stock_sisa_piring' => 0,
+         'stock_sisa_gelas' => 0,
+      );
+
+      foreach ($records as $stock) {
+         $totals['stock_awal_piring'] += (int) $stock['stock_awal_piring'];
+         $totals['stock_awal_gelas'] += (int) $stock['stock_awal_gelas'];
+         $totals['terpakai_piring'] += (int) $stock['terpakai_piring'];
+         $totals['terpakai_gelas'] += (int) $stock['terpakai_gelas'];
+         $totals['stock_sisa_piring'] += (int) $stock['stock_sisa_piring'];
+         $totals['stock_sisa_gelas'] += (int) $stock['stock_sisa_gelas'];
+      }
+
+      $response = array(
+         'stocks' => $records,
+         'totals' => $totals
+      );
+
+      $this->response->setJsonContent($response);
+      return $this->response;
    }
 }
