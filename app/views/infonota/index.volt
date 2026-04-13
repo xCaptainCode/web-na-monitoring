@@ -114,6 +114,6 @@
 
    $(document).on('click', '.row-click', function () {
       let id = $(this).data('id');
-      window.location.href = `{{ url('monitorminuman/detail_nota/') }}` + id;
+      window.location.href = `{{ url('infonota/detail_nota/') }}` + id;
    });
 </script>

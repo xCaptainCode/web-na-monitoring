@@ -305,10 +305,10 @@
          <div class="struk-inner">
 
             {# {{-- HEADER --}} #}
-            <div class="struk-header">
+            {# <div class="struk-header">
                <div class="resto-name">Nota</div>
                <div class="tagline">Rincian Nota Transaksi</div>
-            </div>
+            </div> #}
 
             {# {{-- NOTA NOMOR --}} #}
             <div class="nota-badge">{{ data.nota_format }}</div>
@@ -413,7 +413,7 @@
             </table>
 
             {# {{-- TOTAL AREA --}} #}
-            <hr class="dash">
+            {# <hr class="dash">
             <div class="total-row">
                <span>Subtotal</span>
                <span>{{ Helpers.number(ttl) }}</span>
@@ -437,7 +437,7 @@
             <div class="total-row">
                <span>Kembali</span>
                <span>{{ Helpers.number(data1.j_kembali) }}</span>
-            </div>
+            </div> #}
 
             {# {{-- NOTE --}} #}
             {% if data1.catatan %}
@@ -447,19 +447,25 @@
 
             {# {{-- FOOTER --}} #}
             <hr class="dash">
-            <div class="struk-footer">
+            {# <div class="struk-footer">
                <span class="thankyou">Terima Kasih</span>
-               {# Simpan struk ini sebagai bukti pembayaran #}
+            </div> #}
+            
+            
+            <div class="row justify-content-around">
+               <button class="btn btn-sm btn-secondary" onclick="window.history.back(); return false;"><i class="fa fa-reply" aria-hidden="true"></i> Kembali</button>
+               <button class="btn btn-sm btn-primary" onclick="window.print(); return false;"><i class="fa fa-print" aria-hidden="true"></i> Reprint</button>
             </div>
-
          </div>
          {# {{-- end struk-inner --}} #}
+
+         
       </div>
       {# {{-- end struk --}} #}
 
       {# {{-- CLOSE BUTTON --}} #}
-      <div class="btn-close-struk">
+      {# <div class="btn-close-struk">
          <a href="" onclick="window.history.back(); return false;">✕ Tutup</a>
-      </div>
+      </div> #}
    </div>
 </div>

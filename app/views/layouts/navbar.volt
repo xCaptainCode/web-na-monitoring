@@ -26,7 +26,7 @@
 						<li><a href="{{ url('monitorgorengan/index') }}" class="dropdown-item"><i class="fas fa-bowl-food"></i> Tambahan & Snack </a></li>
 						<li class="dropdown-divider"></li>
 
-						<li><a href="{{ url('monitorminuman/riwayat') }}" class="dropdown-item"><i class="fas fa-receipt"></i> Info Nota </a></li>
+						<li><a href="{{ url('infonota/index') }}" class="dropdown-item"><i class="fas fa-receipt"></i> Info Nota </a></li>
 					</ul>
 				</li>
 				<li class="nav-item dropdown dropdown-hover">
